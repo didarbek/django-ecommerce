@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% load humanize %}
+
+{% block content %}
+      <!-- Page Content -->
+      <div class="container">
+    
+        <div class="row">
+    
+          
+          <!-- /.col-lg-3 -->
+    
+          <div class="col-lg-9">
+    
+            <div class="card mt-4">
+              <img class="card-img-top img-fluid" style="height: 350px;width: 350px;" src="{{ item.image.url }}" alt="">
+              <div class="card-body">
+                <p class="float-right">Category: <i
+                    {% if item.category.name == 'Phones' %} 
+                    class="fas fa-mobile"
+                    {% elif item.category.name == 'Clothes' %}
+                    class="fas fa-tshirt"
+                    {% elif item.category.name == 'Albums' %}
+                    class="fas fa-music"
+                    {% elif item.category.name == 'Cameras' %}
+                    class="fas fa-camera"
+                    {% elif item.category.name == 'Tablets' %}
+                    class="fas fa-tablet"
+                    {% elif item.category.name == 'Books' %}
+                    class="fas fa-book"
+                    {% endif %}
+                ></i> {{ item.category }}</p>
+                <h3 class="card-title">Product name: {{ item.title }}</h3>
+                <h4>Price: {{ item.price }}</h4>
+                <p class="card-text">Description: {{ item.description }}</p>
+                <span class="text-warning">&#9733; &#9733; &#9733; &#9733; &#9734;</span>
+                4.0 stars
+              </div>
+            </div>
+            <!-- /.card -->
+    
+            <div class="card card-outline-secondary my-4">
+              <div class="card-header">
+                Product Reviews
+                {{ comments.count }}
+              </div>
+              {% for comment in comments %}
+              <div class="card-body">
+                <p>{{ comment.body }}</p>
+                <a class="float-right btn btn-outline-danger btn-sm" href="{% url 'core:comment_delete' pk=comment.pk %}"><span class="fas fa-trash"></span> Delete</a><br>
+                <small class="text-muted">Posted by {{ user.username }} on {{ comment.created_on|naturaltime }}</small>
+                <hr>
+              </div>
+              {% endfor %}
+            </div>
+            <!-- /.card -->
+            <div class="card my-4" style="width: 30rem;">
+                <h5 class="card-header ml-0">Leave a review <small> as {{ user.username }}</small></h5>
+                <div class="card-body">
+                  <form method="POST">
+                    <div class="form-group">
+                        {{ comment_form|crispy }}
+                        {% csrf_token %}
+                        <input type="submit" value="Post Comment" class="btn btn-info">
+                    </div>
+                  </form>
+                </div>
+              </div>
+    
+          </div>
+          <!-- /.col-lg-9 -->
+    
+        </div>
+    
+      </div>
+      <!-- /.container -->
+{% endblock content %}

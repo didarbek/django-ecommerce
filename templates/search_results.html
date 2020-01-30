@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+      <!-- Page Content -->
+      <div class="container">
+        <div class="row">
+          <!-- /.col-lg-3 -->
+          <div class="col-lg-9">
+            <div class="row">
+                {% for item in object_list %}
+              <div class="col-lg-4 col-md-6 mb-4 mt-5">
+                <div class="card h-100">
+                  <img style="height:150px;width:150px;" class="card-img-top ml-5" src="{{ item.image.url }}" alt="">
+                  <div class="card-body">
+                    <h4 class="card-title">
+                      <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
+                    </h4>
+                    <b><p>${{ item.price }}</p></b>
+                    <p class="card-text">{{ item.description }}</p>
+                  </div>
+                  <div class="card-footer">
+                      <a class="btn btn-outline-primary btn-sm mb-2" href="{% url 'core:product_update' pk=item.pk %}"><span class="fas fa-edit"></span> Update</a>
+                      <a class="float-right btn btn-outline-danger btn-sm" href="{% url 'core:product_delete' pk=item.pk %}"><span class="fas fa-trash"></span> Delete</a><br>
+                      <a class="btn btn-outline-primary btn-sm" href="{% url 'core:product_detail' pk=item.pk %}"><span class="fas fa-eye"></span> VIEW PRODUCT</a><br>
+                    <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9734;</small>
+                    <p class="card-text">Category: <i
+                      {% if item.category.name == 'Phones' %} 
+                      class="fas fa-mobile"
+                      {% elif item.category.name == 'Clothes' %}
+                      class="fas fa-tshirt"
+                      {% elif item.category.name == 'Albums' %}
+                      class="fas fa-music"
+                      {% elif item.category.name == 'Cameras' %}
+                      class="fas fa-camera"
+                      {% elif item.category.name == 'Tablets' %}
+                      class="fas fa-tablet"
+                      {% elif item.category.name == 'Books' %}
+                      class="fas fa-book"
+                      {% endif %}
+                  ></i> {{ items.category }}</p>
+                  <p class="card-text">{{ item.published_on|naturaltime }}</p>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+            <!-- /.row -->
+            {% if is_paginated %}
+           
+        <ul class="pagination justify-content-center mb-4">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&larr; Older</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#">&larr; Older</a>
+              </li>
+            {% endif %}
+  
+            {% for i in paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}">Newer &rarr;</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#">Newer &rarr;</a>
+              </li>
+            {% endif %}
+          </ul>
+              {% endif %}
+          </div>
+          <!-- /.col-lg-9 -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container -->
+{% endblock content %}

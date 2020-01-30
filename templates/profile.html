@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load i18n %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}{{ user.username }}'s profile{% endblock title %}
+
+{% block content %}
+  <header class="header">
+        <div class="container">
+          <div class="teacher-name" style="padding-top:20px;">
+            <div class="row" style="margin-top:0px;">
+            <div class="col-md-9">
+              <h2 style="font-size:38px"><strong>Username: {{ user.username }}</strong></h2>
+            </div>
+            <div class="col-md-3">
+              <div class="button" style="float:right;">
+                <a href="{% url 'core:account_update' %}" class="btn btn-outline-success btn-sm">{% trans "Edit Profile" %}</a><br>
+                <a href="{% url 'account_change_password' %}">{% trans "Change password" %}</a><br>
+                <a href="{% url 'account_reset_password' %}">{% trans "Reset password" %}</a>
+              </div>
+            </div>
+            </div>
+          </div>
+          <div class="row" style="margin-top:20px;">
+            <div class="col-md-3">
+                {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar.url }}" class="avatar img-circle img-thumbnail" alt="avatar">
+                {% else %}
+                <img src="{% static 'img/blank_picture.png' %}" class="avatar img-circle img-thumbnail" alt="">
+                {% endif %}
+            </div>
+            <div class="col-md-6"> 
+              <p><b>{% trans "First Name:" %}</b> <span class="badge badge-primary">{{ user.first_name }}</span></p>
+              <p><b>{% trans "Last Name:" %}</b> <span class="badge badge-primary">{{ user.last_name }}</span></p>
+              <p><b>{% trans "Email:" %}</b> <span class="badge badge-primary">
+                  {% if user.email %}
+                  {{ user.email }}
+                  {% else %}
+                  {% trans "None" %}
+                  {% endif %}
+              </span></p>
+              <p><b>{% trans "Website:" %}</b> <span class="badge badge-primary">
+                {% if user.profile.website %}
+                {{ user.profile.website }}
+                {% else %}
+                {% trans "None" %}
+                {% endif %}
+              </span></p>
+              <p><b>{% trans "City:" %}</b> <span class="badge badge-primary">
+                  {% if user.profile.city %}
+                  {{ user.profile.city }}
+                  {% else %}
+                  {% trans "None" %}
+                  {% endif %}
+              </span></p>
+              <p><b>Country:</b> <span class="badge badge-primary">
+                  {% if user.profile.country %}
+                  {{ user.profile.country }}
+                  {% else %}
+                  None
+                  {% endif %}
+              </span></p>
+              <p><b>{% trans "Organization:" %}</b> <span class="badge badge-primary">
+                  {% if user.profile.organization %}
+                  {{ user.profile.organization }}
+                  {% else %}
+                  {% trans "None" %}
+                  {% endif %}
+              </span></p>
+              <p><b>{% trans "Birth Date:" %}</b> <span class="badge badge-primary">{{ user.profile.birth_date }}</span></p>
+              <p><b>{% trans "Registered on:" %}</b> <span class="badge badge-primary">{{ user.date_joined }}</span></p>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="container">    
+      <div class="row">
+            <div class="col-md-12">
+              <div class="card card-block text-xs-left">
+                <h2 class="card-title" style="color:"><i class="fa fa-user fa-fw"></i>{% trans "Bio" %}</h2>
+                <div style="height: 15px"></div>
+                  <p>{{ user.profile.bio }}</p>
+              </div>
+            </div>
+          </div>
+      <div class="row">
+          <div class="col-md-12">
+              <div class="card card-block text-xs-left" style="margin-bottom:15px;">
+                <h2 class="card-title" style="color:"><i class="fas fa-clipboard fa-fw"></i>{% trans "My Products" %}</h2>
+                <div style="height: 15px"></div>
+                <ul class="list-group">
+                    {% for Item in user_products %}
+                  <li class="list-group-item"><a href="{% url 'core:product_detail' pk=Item.pk%}"><b>Title: {{ Item.title }}</b></a><br>
+                    Publish Date: {{ Item.published_on }}
+                  </li>
+                    {% endfor %}
+                </ul>
+              </div>
+          </div>
+      </div>
+    </div>
+{% endblock content %}

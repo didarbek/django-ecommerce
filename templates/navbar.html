@@ -1,0 +1,65 @@
+{% load i18n %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="{% url 'core:product_list' %}">EShop</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+              {% if user.is_authenticated %}
+              <li class="nav-item">
+                  <a class="nav-link" href="{% url 'core:profile' %}"><i class="fas fa-user"></i> {% trans "Username:" %} {{ user.username }}
+                  </a>
+                </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Logout" %}
+                </a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="{% url 'core:order-summary' %}"><i class="fas fa-shopping-cart"></i> {% trans "Cart" %}
+                  </a>
+                </li>
+              {% else %}
+              <li class="nav-item">
+                  <a class="nav-link" href="{% url 'account_login' %}">{% trans "Login" %}
+                  </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign Up" %}
+                    </a>
+                  </li>
+              {% endif %}
+              <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'core:search_results' %}">
+                  <input name='title' class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+                <li class="dropdown ml-3" id="language-switcher">
+                    <form action="{% url 'set_language' %}" method="post">
+                        {% csrf_token %}
+                        <input name="next" type="hidden" value="{{ redirect_to }}" />
+                        <select class="selectpicker" name="{% trans 'language' %}" style="width: auto;" onchange="this.form.submit()">
+                          {% get_current_language as LANGUAGE_CODE %}
+                          {% get_available_languages as LANGUAGES %}
+                          {% get_language_info_list for LANGUAGES as languages %}
+                          {% for language in languages %}
+                              <option
+                                value="{{ language.code }}"
+                                {% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}
+                                data-content='<img src="/static/img/flags/{{ language.code }}.png"></span>
+                                <span style="display:inline-block; width:100px; padding-left: 10px; text-shadow:none">
+                                  {{ language.name_local }}
+                                  <!-- span style="color:#999;">&nbsp;[{{ language.code }}]</span -->
+                                </span>'>
+                                {{ language.code }}
+                              </option>
+            
+                          {% endfor %}
+                        </select>
+                    </form>
+                </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
